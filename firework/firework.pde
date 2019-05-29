@@ -14,10 +14,38 @@ void setup() {
     fs[i] = new Firework();
   }
 }
-void draw() {//Draws background, buttons
+void draw() {//Draws background and buttons
   noStroke();
-  fill(50, 50, 50, 20);
-  rect(0, 0, width, height);
+  fill(50, 50, 50, 20);//Background color
+  rect(0, 0, width, height);//Background shape
+
+  stroke(255);//Divider color
+  line(700, 0, 700, 600);
+  noStroke();//Removes button outlines
+
+  fill(255, 255, 255);//Text color
+  text("Colors:", 729, 25);
+
+  fill(255, 0, 0);//Red button
+  rect(710, 50, 35, 35);//Left colum placement at 710
+
+  fill(255, 165, 0);//Orange button
+  rect(755, 50, 35, 35);//Right colum placement at 755
+
+  fill(255, 255, 0);//Yellow button
+  rect(710, 95, 35, 35);//Space vertically by 45
+
+  fill(50, 205, 50);//Green button
+  rect(755, 95, 35, 35);
+
+  fill(30, 144, 255);//Blue button
+  rect(710, 140, 35, 35);
+
+  fill(138, 43, 226);//Purple button
+  rect(755, 140, 35, 35);
+  
+  fill(255, 255, 255);//Loop button
+  
   for (int i = 0; i < fs.length; i++) {
     fs[i].draw();
   }
