@@ -1,12 +1,9 @@
 Firework[] fs = new Firework[10];
-boolean once;
+boolean once, onButton;
 //For color changes
 int r;
 int g;
 int b;
-//For click location checks
-float mouseXPos=mouseX;
-float mouseYPos=mouseY;
 
 void setup() {
   size(800, 600);
@@ -88,7 +85,7 @@ void mouseReleased() {//Launches fireworks
 class Firework {
   float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
   int flareAmount, duration;
-  boolean launched, exploded, hidden, onButton;
+  boolean launched, exploded, hidden;
   color flare;
   Firework() {
     launched = false;
@@ -122,16 +119,17 @@ class Firework {
     //Begin button click location checks
   }
   void mousePressed() {
-    if (mouseXPos>=700) {//Within divider
+    if (mouseX>=700) {//Within divider
       launched = false;
       exploded = false;
       hidden = true;
-      if (mouseXPos>=710 && mouseXPos<=745 && mouseYPos>=50 && mouseYPos<=85) {//On red button
+      if (mouseX>=710 && mouseX<=745 && mouseY>=50 && mouseY<=85) {//On red button
         onButton=true;
         flare=color(255, 0, 0);
       }
     }
   }
+
   void launch() {
     x = oldX = mouseX + ((random(5)*10) - 25);
     y = oldY = height;
