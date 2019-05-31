@@ -1,12 +1,13 @@
 Firework[] fs = new Firework[10];
-boolean once, onButton;
+boolean once;
 //For color changes
 int r;
 int g;
 int b;
-
+color currentColor;
 void setup() {
   size(800, 600);
+  currentColor=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
   smooth();
   for (int i = 0; i < fs.length; i++) {
     fs[i] = new Firework();
@@ -86,14 +87,15 @@ class Firework {
   float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
   int flareAmount, duration;
   boolean launched, exploded, hidden;
+  boolean onButton, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
   color flare;
   Firework() {
     launched = false;
     exploded = false;
     hidden = true;
   }
-  void draw() {//Draws each firework and does click location checks for buttons
-    fill(255, 255, 255);//Speed: value text
+  void draw() {//Draws each firework
+    fill(255, 255, 255);//Speed indicator text
     text(ySpeed, 751, 330);
     if ((launched)&&(!exploded)&&(!hidden)) {
       launchMaths();
@@ -116,32 +118,42 @@ class Firework {
     if ((!launched)&&(!exploded)&&(hidden)) {
       //Do nothing
     }
-    //Begin button click location checks
   }
-  void mousePressed() {
+  void update(int x, int y) {//Work in progress
+    if (overButton(710, 50, 35, 35)) {//Red
+      onButton=true;
+      onRed=true;
+    } else if (overButton(755, 50, 35, 35)) {//Orange
+      onButton=true;
+      onOrange=true;
+    }
+  }
+  boolean overButton(int x, int y, int width, int height) {//Work in progress
+    if (mouseX >= x && mouseX <= x+width && 
+      mouseY >= y && mouseY <= y+height) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  void mousePressed() {//Work in progress
     if (mouseX>=700) {//Within divider
       launched = false;
       exploded = false;
       hidden = true;
-      if (mouseX>=710 && mouseX<=745 && mouseY>=50 && mouseY<=85) {//On red button
+      if (mouseX>=710 && mouseX<=745 && mouseY>=50 && mouseY<=85) {
         onButton=true;
         flare=color(255, 0, 0);
       }
     }
   }
-
   void launch() {
     x = oldX = mouseX + ((random(5)*10) - 25);
     y = oldY = height;
     targetX = mouseX;
     targetY = mouseY;
-
-    //Make speed into a button and click location check
     ySpeed = random(3) + 2;
-
-    //Make flare into several color buttons and click location checks
     flare = color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);//Use this for random color button
-
     flareAmount = ceil(random(30)) + 20;
     //Always makes the flare split even
     while (360%flareAmount!=0) {
