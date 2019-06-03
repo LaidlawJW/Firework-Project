@@ -1,19 +1,27 @@
 Firework[] fs = new Firework[10];
+float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
+int flareAmount, duration;
+boolean launched, exploded;
+boolean onButton, withinButton, withinDivider, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
+color flare;
+boolean hidden;
 boolean once;
 //For color changes
 int r;
 int g;
 int b;
-color currentColor;
+color defaultColor;//Only use when selecting the random button
 void setup() {
   size(800, 600);
-  currentColor=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
+  //Colors are randomized by default
+  defaultColor=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
   smooth();
   for (int i = 0; i < fs.length; i++) {
     fs[i] = new Firework();
   }
 }
 void draw() {//Draws background and buttons
+  update(mouseX, mouseY);
   noStroke();
   fill(50, 50, 50, 20);//Background color
   rect(0, 0, width, height);//Background shape
@@ -74,6 +82,45 @@ void draw() {//Draws background and buttons
     fs[i].draw();
   }
 }
+//Begin button related methods
+boolean overButton(int x, int y, int width, int height) {//Work in progress
+  if (mouseX >= x && mouseX <= x+width && 
+    mouseY >= y && mouseY <= y+height) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void update(int x, int y) {//Work in progress
+  if (overButton(700, 0, 0, 700)) {//Within divider
+    withinDivider=true;
+    launched=false;
+    exploded=false;
+    hidden=true;
+    if (overButton(710, 50, 35, 35)) {//Red
+      onButton=true;
+      onRed=true;
+      flare=color(255, 0, 0);
+    } 
+    if (overButton(755, 50, 35, 35)) {//Orange
+      onButton=true;
+      onRed=false;
+      onOrange=true;
+    }
+  }
+}
+
+void mousePressed() {//Work in progress, uses the variables from update
+  if (withinDivider) {//Within divider
+    launched = false;
+    exploded = false;
+    hidden = true;
+    if (mouseX>=710 && mouseX<=745 && mouseY>=50 && mouseY<=85) {//Red
+      flare=color(255, 0, 0);
+    }
+  }
+}
 void mouseReleased() {//Launches fireworks
   once = false;
   for (int i = 0; i < fs.length; i++) {
@@ -86,9 +133,10 @@ void mouseReleased() {//Launches fireworks
 class Firework {
   float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
   int flareAmount, duration;
-  boolean launched, exploded, hidden;
-  boolean onButton, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
+  boolean launched, exploded;
+  boolean onButton, withinButton, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
   color flare;
+  boolean hidden;
   Firework() {
     launched = false;
     exploded = false;
@@ -119,40 +167,13 @@ class Firework {
       //Do nothing
     }
   }
-  void update(int x, int y) {//Work in progress
-    if (overButton(710, 50, 35, 35)) {//Red
-      onButton=true;
-      onRed=true;
-    } else if (overButton(755, 50, 35, 35)) {//Orange
-      onButton=true;
-      onOrange=true;
-    }
-  }
-  boolean overButton(int x, int y, int width, int height) {//Work in progress
-    if (mouseX >= x && mouseX <= x+width && 
-      mouseY >= y && mouseY <= y+height) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  void mousePressed() {//Work in progress
-    if (mouseX>=700) {//Within divider
-      launched = false;
-      exploded = false;
-      hidden = true;
-      if (mouseX>=710 && mouseX<=745 && mouseY>=50 && mouseY<=85) {
-        onButton=true;
-        flare=color(255, 0, 0);
-      }
-    }
-  }
+  //Everything below is completed
   void launch() {
     x = oldX = mouseX + ((random(5)*10) - 25);
     y = oldY = height;
     targetX = mouseX;
     targetY = mouseY;
-    ySpeed = random(3) + 2;
+    ySpeed = random(4) + 2;
     flare = color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);//Use this for random color button
     flareAmount = ceil(random(30)) + 20;
     //Always makes the flare split even
@@ -167,7 +188,6 @@ class Firework {
     launched = true;
     exploded = false;
     hidden = false;
-    onButton=false;
   }
   void launchMaths() {
     oldX = x;
@@ -184,7 +204,6 @@ class Firework {
     launched = false;
     exploded = true;
     hidden = false;
-    onButton=false;
   }
   void explodeMaths() {
     if (explodeTimer < duration) {
@@ -197,6 +216,5 @@ class Firework {
     launched = false;
     exploded = false;
     hidden = true;
-    onButton=false;
   }
 }
