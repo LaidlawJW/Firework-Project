@@ -2,23 +2,20 @@ Firework[] fs = new Firework[10];
 float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
 int flareAmount, duration;
 boolean launched, exploded;
-boolean onButton, withinDivider, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
-color flare;
+color flare=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
+color newFlare;
+boolean noColor=true;
 boolean hidden;
 boolean once;
-
-color defaultColor;//Only use when selecting the random button
 void setup() {
   size(800, 600);
   //Colors are randomized by default
-  defaultColor=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
   smooth();
   for (int i = 0; i < fs.length; i++) {
     fs[i] = new Firework();
   }
 }
 void draw() {//Draws background and buttons
-  update(mouseX, mouseY);
   noStroke();
   fill(50, 50, 50, 20);//Background color
   rect(0, 0, width, height);//Background shape
@@ -54,63 +51,28 @@ void draw() {//Draws background and buttons
   fill(0, 0, 0);//"Random" text color
   text("Random color", 710, 205);
 
-  fill(255, 0, 0);//Loop button
-  rect(709, 265, 82, 35);
-
-  fill(255, 255, 255);//"Loop Pattern" text color
-  text("Loop Pattern", 713, 260);
-
-  fill(255, 255, 255);//Speed - button
-  rect(709, 340, 38, 35);
-
-  fill(255, 255, 255);//Speed + button
-  rect(754, 340, 38, 35);
-
-  fill(0, 0, 0);//"-" text color
-  text("-", 724, 362);
-
-  fill(0, 0, 0);//"+" text color
-  text("+", 768, 362);
-
-  fill(255, 255, 255);//"Speed:" text color
-  text("Speed:", 709, 330);
-  if (mouseX>=700) {//Click check for each button
-    if (mousePressed) {
-      if (withinDivider==true) {
-        launched=false;
-        exploded=false;
-        hidden=true;
-      }
-    }
-  }
   for (int i = 0; i < fs.length; i++) {
     fs[i].draw();
   }
 }
-void update(int x, int y){//Uses the coordinates for each button
-  if(overButton(700, 0, 0, 700)){//Divider
-    withinDivider=true;
-  }
-}
-
-void mousePressed() {//Launches fireworks
+void mousePressed() {//Launches fireworks and checks for buttons
   once = false;
-  for (int i = 0; i < fs.length; i++) {
-    if ((fs[i].hidden)&&(!once)) {
-      fs[i].launch();
-      once = true;
+  if (mouseX>=710 && mouseX<=750 && mouseY>=50 && mouseY<=85) {//Red button
+    if (mousePressed) {
+      newFlare = color(random(3)*50 + 105, 0, 0);
+      flare=newFlare;
+    }
+  }
+  if (mouseX<700) {//Allows for launch
+    for (int i = 0; i < fs.length; i++) {
+      if ((fs[i].hidden)&&(!once)) {
+        fs[i].launch();
+        once = true;
+      }
     }
   }
 }
 
-boolean overButton(int x, int y, int width, int height)  {
-  if (mouseX >= x && mouseX <= x+width && 
-      mouseY >= y && mouseY <= y+height) {
-    return true;
-  } else {
-    return false;
-  }
-}
 class Firework {
   float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
   int flareAmount, duration;
@@ -124,8 +86,6 @@ class Firework {
     hidden = true;
   }
   void draw() {//Draws each firework
-    fill(255, 255, 255);//Speed indicator text
-    text(ySpeed, 751, 330);
     if ((launched)&&(!exploded)&&(!hidden)) {
       launchMaths();
       strokeWeight(1);
@@ -148,14 +108,13 @@ class Firework {
       //Do nothing
     }
   }
-  //Everything below is completed
   void launch() {
     x = oldX = mouseX + ((random(5)*10) - 25);
     y = oldY = height;
     targetX = mouseX;
     targetY = mouseY;
     ySpeed = random(4) + 2;
-    flare = defaultColor;//Use this for random color button
+    flare=newFlare;
     flareAmount = ceil(random(30)) + 20;
     //Always makes the flare split even
     while (360%flareAmount!=0) {
@@ -163,7 +122,7 @@ class Firework {
         flareAmount = ceil(random(30)) + 20;
       }
     }
-    flareWeight = ceil(random(3));
+    flareWeight = ceil(random(2));
     duration = ceil(random(4))*20 + 30;
     flareAngle = 360/flareAmount;
     launched = true;
