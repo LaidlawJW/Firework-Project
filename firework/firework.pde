@@ -3,8 +3,7 @@ float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, fla
 int flareAmount, duration;
 boolean launched, exploded;
 color flare=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
-color newFlare;
-boolean noColor=true;
+color newFlare=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
 boolean hidden;
 boolean once;
 void setup() {
@@ -59,9 +58,9 @@ void mousePressed() {//Launches fireworks and checks for buttons
   once = false;
   if (mouseX>=710 && mouseX<=750 && mouseY>=50 && mouseY<=85) {//Red button
     if (mousePressed) {
-      newFlare = color(random(3)*50 + 105, 0, 0);
+      newFlare = color(255, 82, 82);//All of the colors are a light shade to avoid persisting streak marks
       flare=newFlare;
-    }
+    } 
   }
   if (mouseX<700) {//Allows for launch
     for (int i = 0; i < fs.length; i++) {
@@ -78,7 +77,7 @@ class Firework {
   int flareAmount, duration;
   boolean launched, exploded;
   boolean onButton, withinButton, onRed, onOrange, onYellow, onGreen, onBlue, onPurple;
-  color flare;
+  color flare=color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
   boolean hidden;
   Firework() {
     launched = false;
